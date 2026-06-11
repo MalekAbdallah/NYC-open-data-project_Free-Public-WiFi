@@ -126,11 +126,13 @@ displayChart(typeData, "chart", "pie");
 let wifiData;
 let map;
 
-async function initMap() {
-let response = await fetch("wifi.json");
-wifiData = await response.json();
+async function initMap(){
 
-if (map) {
+let link = "wifi.json";
+let info = await fetch(link);
+wifiData = await info.json();
+
+if(map){
 map.remove();
 }
 
@@ -141,11 +143,15 @@ maxZoom: 19,
 attribution: "&copy; OpenStreetMap"
 }).addTo(map);
 
-for (let wifi of wifiData) {
+for(let i = 0; i < wifiData.length; i += 1){
+
+let wifi = wifiData[i];
+
 let lat = Number(wifi.latitude);
 let lon = Number(wifi.longitude);
 
-if (!isNaN(lat) && !isNaN(lon)) {
+if(!isNaN(lat) && !isNaN(lon)){
+
 L.marker([lat, lon]).addTo(map)
 .bindPopup(`
 <h3>${wifi.name}</h3>
@@ -153,6 +159,7 @@ L.marker([lat, lon]).addTo(map)
 <p>Location: ${wifi.location}</p>
 <p>Coordinates: ${wifi.latitude}, ${wifi.longitude}</p>
 `);
+
 }
 }
 }
@@ -162,12 +169,12 @@ function displayLocation(){
 let lat = Number(document.getElementById("lat").value);
 let lon = Number(document.getElementById("lon").value);
 
-if (isNaN(lat) || isNaN(lon)) {
+if(isNaN(lat) || isNaN(lon)){
 alert("Please enter valid coordinates.");
 return;
 }
 
-if (map) {
+if(map){
 map.remove();
 }
 
@@ -179,6 +186,10 @@ attribution: "&copy; OpenStreetMap"
 }).addTo(map);
 
 L.marker([lat, lon]).addTo(map)
-.bindPopup(`Latitude: ${lat}<br>Longitude: ${lon}`)
+.bindPopup(`
+<h3>Selected Location</h3>
+<p>Latitude: ${lat}</p>
+<p>Longitude: ${lon}</p>
+`)
 .openPopup();
 }
